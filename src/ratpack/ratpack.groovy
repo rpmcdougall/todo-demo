@@ -22,4 +22,4 @@ ratpack {
             render(Jackson.json(todos))
         }
     }
-}
+} // TODO: 9.2 https://danhyun.github.io/2016-gr8confeu-rapid-ratpack-groovy/#defining_the_schema
