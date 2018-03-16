@@ -6,16 +6,18 @@ buildscript {
     dependencies {
         classpath 'com.h2database:h2:1.4.186'
         classpath 'org.jooq:jooq-codegen:3.8.1'
+        classpath 'io.ratpack:ratpack-gradle:1.5.4'
     }
 }
 
-plugins { // <1>
-    id 'io.ratpack.ratpack-groovy' version '1.5.4'
-}
+apply plugin: "io.ratpack.ratpack-groovy"
+apply plugin: "idea"
+
 
 repositories {
     jcenter()
 }
+
 
 dependencies {
     compile ratpack.dependency('hikari')

@@ -2,6 +2,7 @@ import groovy.transform.CompileStatic
 import ratpack.groovy.handling.GroovyContext
 import ratpack.groovy.handling.GroovyHandler
 import ratpack.http.MutableHeaders
+import ratpack.registry.Registry
 
 @CompileStatic
 class CORSHandler extends GroovyHandler {
@@ -10,6 +11,8 @@ class CORSHandler extends GroovyHandler {
         MutableHeaders headers = context.response.headers
         headers.set('Access-Control-Allow-Origin', '*')
         headers.set('Access-Control-Allow-Headers', 'x-requested-with, origin, content-type, accept')
-        context.next()
+        String host = context.request.headers.get('HOST')
+        String baseUrl = "http://$host" // <1>
+        context.next(Registry.single(String, baseUrl))
     }
 }
