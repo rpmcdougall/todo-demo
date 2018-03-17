@@ -3,6 +3,9 @@ import groovy.transform.CompileStatic
 import ratpack.exec.Promise
 import ratpack.func.Action
 import ratpack.func.Function
+import ratpack.groovy.Groovy
+import ratpack.groovy.handling.GroovyByMethodSpec
+import ratpack.groovy.handling.GroovyContext
 import ratpack.handling.ByMethodSpec
 import ratpack.handling.Context
 import ratpack.handling.InjectionHandler
@@ -13,18 +16,21 @@ import ratpack.jackson.JsonRender
 @CompileStatic
 class TodoHandler extends InjectionHandler {
     void handle(Context ctx, TodoRepository repo, String base) throws Exception {
+
+//        ctx = GroovyContext.from(ctx)
+
         Long todoId = Long.parseLong(ctx.pathTokens.get('id'))
 
         Function<TodoModel, TodoModel> hostUpdater = { TodoModel todo -> todo.baseUrl(base) } as Function<TodoModel, TodoModel>
         Function<TodoModel, JsonRender> toJson = hostUpdater.andThen { todo -> Jackson.json(todo) }
 
         Response response = ctx.response
-
-        ctx.byMethod({ ByMethodSpec byMethodSpec -> byMethodSpec
-                .options {
+        GroovyContext gtx = GroovyContext.from(ctx)
+        gtx.byMethod({ GroovyByMethodSpec byMethodSpec -> byMethodSpec
+        .options {
                     response.headers.set('Access-Control-Allow-Methods', 'OPTIONS, GET, PATCH, DELETE')
                     response.send()
-        }
+                 }
         .get { repo.getById(todoId).map(toJson).then(ctx.&render) }
                 .patch {
                     ctx

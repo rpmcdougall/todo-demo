@@ -2,6 +2,8 @@ import groovy.transform.CompileStatic
 import ratpack.exec.Promise
 import ratpack.func.Action
 import ratpack.func.Function
+import ratpack.groovy.handling.GroovyByMethodSpec
+import ratpack.groovy.handling.GroovyContext
 import ratpack.handling.ByMethodSpec
 import ratpack.handling.Context
 import ratpack.handling.InjectionHandler
@@ -11,8 +13,9 @@ import ratpack.jackson.Jackson
 @CompileStatic
 class TodoBaseHandler extends InjectionHandler {
     void handle(Context ctx, TodoRepository repository, String baseUrl) throws Exception {
+        GroovyContext gtx = GroovyContext.from(ctx)
         Response response = ctx.response
-        ctx.byMethod({ ByMethodSpec method -> method
+        gtx.byMethod({ GroovyByMethodSpec method -> method
             .options {
                 response.headers.set('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, DELETE')
                 response.send()
